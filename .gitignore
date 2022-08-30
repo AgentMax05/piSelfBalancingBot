@@ -6,6 +6,8 @@ cpp_test
 /final_code/motor_calibrate
 
 *.exe
+*.out
+
 *.csv
 *.txt
 *.xlsx
