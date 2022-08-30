@@ -2,6 +2,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <vector>
 #include "mpu6050.hpp"
 #include "pid.hpp"
 
