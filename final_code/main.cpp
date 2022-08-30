@@ -6,7 +6,7 @@
 #include "pid.hpp"
 
 #include <string.h> // for flag checking
-#include <fstream> // DEBUG
+#include <fstream> // DEBUG (write) and reading offsets (read)
 #include <signal.h> // for catching ctrl+c
 
 using namespace std;
@@ -61,6 +61,23 @@ string getFlagArg(int argc, char *argv[], string flag) {
     return "";
 }
 
+vector<string> splitString(string input, char delimiter) {
+    vector<string> output = {};
+    int lastSplit = 0;
+    input += delimiter; // add delimiter to the end to make sure end of input is added
+    for (int i = 0; i < input.size(); i++) {
+        if (input[i] == delimiter) {
+            if (i == 0) {
+                lastSplit = 1;
+                continue;
+            }
+            output.push_back(input.substr(input.begin() + lastSplit, i - lastSplit));
+            lastSplit = i + 1;
+        }
+    }
+    return output;
+}
+
 void ctrlc_callback(int sig) {
     cleanup(usedPins);
     exit(sig);
@@ -99,7 +116,26 @@ int main(int argc, char *argv[]) {
     //     delay(500);
     // }
     // mpu6050 gyroSensor(0x68, GYRO_RANGE_2000DEG, ACCEL_RANGE_2G, {-16.5033, 0.679927, -2.37347});
-    mpu6050 gyroSensor(0x68, GYRO_RANGE_2000DEG, ACCEL_RANGE_2G, {-16.4125, 0.624438, -2.38807});
+
+    // read offsets from offsets.txt (set by gyro_calibrate)
+    string line, data = "";
+    ifstream offsetsFile("./offsets.txt");
+    if (offsetsFile.is_open()) {
+        while (offsetsFile) {
+            getline(offsetsFile, line);
+            data += line;
+        }
+        offsetsFile.close();
+    }
+
+    vector<string> dataVector = splitString(data, ',');
+    vector<double> rawOffsets = {};
+    for (int i = 0; i < dataVector.size(); i++) {
+        rawOffsets.push_back(stod(dataVector[i]));
+    }
+    vector<double> offsets = rawOffsets.size() == 3 ? rawOffsets : vector<double>({-16.4125, 0.624438, -2.38807});
+
+    mpu6050 gyroSensor(0x68, GYRO_RANGE_2000DEG, ACCEL_RANGE_2G, offsets);
     double angle = 0;
 
     double kp, ki, kd;

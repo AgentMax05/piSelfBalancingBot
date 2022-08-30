@@ -2,6 +2,7 @@
 #include <iostream>
 #include <chrono>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 using namespace chrono;
@@ -32,4 +33,11 @@ int main(int argc, char *argv[]) {
     data[2] = data[2] / testCount;
 
     cout << "offsets: x: " << data[0] << ", y: " << data[1] << ", z: " << data[2] << '\n';
+    cout << "writing offsets to file ../offsets.txt\n";
+    
+    ofstream offsetsFile("../offsets.txt");
+    offsetsFile << data[0] << ',' << data[1] << ',' << data[2];
+    offsetsFile.close();
+
+    cout << "file written\n";
 }
