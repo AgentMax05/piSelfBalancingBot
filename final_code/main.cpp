@@ -85,6 +85,17 @@ void ctrlc_callback(int sig) {
 }
 
 int main(int argc, char *argv[]) {
+
+    // print out help if --help is entered
+    if (hasFlag(argc, argv, "--help") || hasFlag(argc, argv, "-h")) {
+        cout << "\nusage: sudo ./main <p> <i> <d> [-h | --help] [--target <target-angle>] [--delay <pid-delay-ms>] [-d | --debug <debug-duration-sec>]\n";
+        cout << "\n<p>: the pid proportional gain\n<i>: the pid integral gain\n<d>: the pid derivative gain\n";
+        cout << "\n--target <target-angle>: set the target angle of the pid control (default 0)\n";
+        cout << "--delay <pid-delay-ms>: set the delay between each pid iteration in ms (default 1)\n";
+        cout << "-d | --debug <debug-duration-sec>: track all variables and write to robotData.txt for <debug-duration-sec> seconds (default 10)\n\n";
+        return 0;
+    }
+
     // mpu6050 sensor(0x68, GYRO_RANGE_2000DEG);
     // double angle = 0;
 
