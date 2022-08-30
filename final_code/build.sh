@@ -1,0 +1,1 @@
+g++ *.cpp -lwiringPi -pthread -o main
