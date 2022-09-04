@@ -5,11 +5,14 @@
 
 using namespace std;
 
-PID::PID(double new_kp, double new_ki, double new_kd, double max, double min) {
+PID::PID(double new_kp, double new_ki, double new_kd, double max, double min, int newIntegralTime = 350) {
     setConstants(new_kp, new_ki, new_kd);
     computeMax = max;
     computeMin = min;
-    pastError = vector<double>(350, 0);
+    integralTime = newIntegralTime;
+    if (integralTime > 0) {
+        pastError = vector<double>(integralTime, 0);
+    }
 }
 
 void PID::setConstants(double new_kp, double new_ki, double new_kd) {
@@ -34,9 +37,13 @@ double PID::compute(double current, double deltaTime) {
 
     // use trapezoidal rule to approximate integral
     integralAddition = ((prevError + error) / 2) * deltaTime;
-    integral = integral - pastError[pastError.size() - 1] + integralAddition;
-    pastError.pop_back();
-    pastError.insert(pastError.begin(), integralAddition);
+    if (integralTime > 0) {
+        integral = integral - pastError[pastError.size() - 1] + integralAddition;
+        pastError.pop_back();
+        pastError.insert(pastError.begin(), integralAddition);
+    } else {
+        integral += integralAddition;
+    }
 
     proportional = error;
     // integral += error * deltaTime;

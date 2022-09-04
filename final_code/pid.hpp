@@ -6,7 +6,7 @@ using namespace std;
 
 class PID {
   public:
-    PID(double kp, double ki, double kd, double max, double min);
+    PID(double kp, double ki, double kd, double max, double min, int integralTime);
     void setConstants(double kp, double ki, double kd);
     void setTarget(double target);
     vector<double> getRaw();
@@ -18,6 +18,7 @@ class PID {
     double computeMax, computeMin;
     double proportional, integral = 0, derivative;
     double prev_derivative = 0;
+    int integralTime;
 
     double integralAddition;
     double output;

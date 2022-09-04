@@ -88,10 +88,11 @@ int main(int argc, char *argv[]) {
 
     // print out help if --help is entered
     if (hasFlag(argc, argv, "--help") || hasFlag(argc, argv, "-h")) {
-        cout << "\nusage: sudo ./main <p> <i> <d> [-h | --help] [--target <target-angle>] [--delay <pid-delay-ms>] [-d | --debug <debug-duration-sec>]\n";
+        cout << "\nusage: sudo ./main <p> <i> <d> [-h | --help] [--target <target-angle>] [--delay <pid-delay-ms>] [--integralTime <integral-time>] [-d | --debug <debug-duration-sec>]\n";
         cout << "\n<p>: the pid proportional gain\n<i>: the pid integral gain\n<d>: the pid derivative gain\n";
         cout << "\n--target <target-angle>: set the target angle of the pid control (default 0)\n";
         cout << "--delay <pid-delay-ms>: set the delay between each pid iteration in ms (default 1)\n";
+        cout << "--integralTime <integral-time>: set the delta time for the integral in seconds (0 is continuous, default 350)\n"
         cout << "-d | --debug <debug-duration-sec>: track all variables and write to robotData.txt for <debug-duration-sec> seconds (default 10)\n\n";
         return 0;
     }
@@ -167,7 +168,15 @@ int main(int argc, char *argv[]) {
 
     cout << "constants: " << kp << " " << ki << " " << kd << '\n';
 
-    PID drivePID(kp, ki, kd, 1024, -1024);
+    int integralTime;
+    string integralTimeVal = getFlagArg(argc, argv, "--integralTime");
+    if (integralTimeVal == "") {
+        integralTime = 0;
+    } else {
+        integralTime = stoi(integralTimeVal);
+    }
+
+    PID drivePID(kp, ki, kd, 1024, -1024, integralTime);
     // drivePID.setTarget(0);
     // drivePID.setTarget(10);
     double target;
