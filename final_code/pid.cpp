@@ -31,9 +31,12 @@ double PID::compute(double current, double deltaTime) {
     // pastError.pop_pack();
     // pastDeltaTime.insert(pastDeltaTime.begin(), deltaTime);
     // pastError.insert(pastError.begin(), error);
-    integral = integral - pastError[pastError.size() - 1] + error * deltaTime;
+
+    // use trapezoidal rule to approximate integral
+    integralAddition = ((prevError + error) / 2) * deltaTime;
+    integral = integral - pastError[pastError.size() - 1] + integralAddition;
     pastError.pop_back();
-    pastError.insert(pastError.begin(), error * deltaTime);
+    pastError.insert(pastError.begin(), integralAddition);
 
     proportional = error;
     // integral += error * deltaTime;
@@ -51,7 +54,7 @@ double PID::compute(double current, double deltaTime) {
     prevError = error;
     // return max(min((proportional * kp) + (integral * ki) + (derivative * kd), computeMax), computeMin);
     // double output = (proportional * kp) + (integral * ki) + (derivative * kd);
-    double output = (proportional * kp) + (integral * ki) + (derivative * kd);
+    output = (proportional * kp) + (integral * ki) + (derivative * kd);
     if (output > computeMax) output = computeMax;
     if (output < computeMin) output = computeMin;
     return output;

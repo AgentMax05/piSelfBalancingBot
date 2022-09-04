@@ -18,5 +18,9 @@ class PID {
     double computeMax, computeMin;
     double proportional, integral = 0, derivative;
     double prev_derivative = 0;
+
+    double integralAddition;
+    double output;
+
     vector<double> pastError;
 };
