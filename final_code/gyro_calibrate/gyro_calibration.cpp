@@ -14,6 +14,19 @@ int main(int argc, char *argv[]) {
     int testCount = 0;
 
     int calibration_duration = argc > 1 ? stoi(argv[1]) : 30;
+    
+    int calibration_start_delay = argc > 2 ? stoi(argv[2]) : 30;
+
+    if (calibration_start_delay > 0) {
+        cout << "\nstarting test in " << calibration_start_delay << "seconds\n";
+        if (calibration_start_delay > 5) {
+            this_thread::sleep_for(seconds(calibration_start_delay - 5));
+            cout << "starting program in 5 seconds\n";
+            this_thread::sleep_for(seconds(5));
+        } else {
+            this_thread::sleep_for(seconds(calibration_start_delay));
+        }
+    }
 
     auto start = high_resolution_clock::now();
     cout << "starting test\n";
