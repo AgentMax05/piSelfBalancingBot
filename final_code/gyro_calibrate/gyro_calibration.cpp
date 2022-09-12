@@ -3,6 +3,7 @@
 #include <chrono>
 #include <vector>
 #include <fstream>
+#include <thread>
 
 using namespace std;
 using namespace chrono;
