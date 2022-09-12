@@ -21,7 +21,7 @@ Then, after building your robot, clone this repository to the Raspberry Pi.
 
 CD to the `final_code` directory and build the main program by entering `bash build.sh` or running `g++ *.cpp -lwiringPi -pthread -o main`. 
 
-Before running the main program, build the code in the `final_code/gyro_calibrate` directory by running `g++ *.cpp -lwiringPi -o gyro_calibrate`, and run the
+Before running the main program, build the code in the `final_code/gyro_calibrate` directory by running `g++ *.cpp -lwiringPi -pthread -o gyro_calibrate`, and run the
 program with `./gyro_calibrate`. This will run a calibration program for approximately a minute to determine offsets for your angle sensor. Please do not move
 the robot during the execution of this program, as that will ruin the results and cause your robot to have innacurate angle readings.
 
