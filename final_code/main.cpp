@@ -72,7 +72,8 @@ vector<string> splitString(string input, char delimiter) {
                 lastSplit = 1;
                 continue;
             }
-            output.push_back(input.substr(input.begin() + lastSplit, i - lastSplit));
+            // output.push_back(input.substr(input.begin() + lastSplit, i - lastSplit));
+            output.push_back(input.substr(lastSplit, i - lastSplit));
             lastSplit = i + 1;
         }
     }
@@ -153,7 +154,7 @@ int main(int argc, char *argv[]) {
 
     // execute start delay
     string startDelayVal = getFlagArg(argc, argv, "--startDelay");
-    if (startDelay != "") {
+    if (startDelayVal != "") {
         int startDelay = stoi(startDelayVal);
         cout << "\nstarting program in " << startDelay << "seconds\n";
         if (startDelay > 5) {
