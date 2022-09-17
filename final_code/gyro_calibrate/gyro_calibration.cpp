@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     }
 
     vector<double> data = {0, 0, 0};
-    cout << "starting test\n";
+    cout << "starting test\n" << "data[0]: " << data[0] << '\n';
     auto start = high_resolution_clock::now();
     while (true) {
         vector<double> newData = gyroSensor.get_gyro_data();
@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         data[1] += newData[1];
         data[2] += newData[2];
         testCount++;
-
+        cout << "loop finished\n";
         if (duration_cast<seconds>(high_resolution_clock::now() - start).count() >= calibration_duration) {
             break;
         }
