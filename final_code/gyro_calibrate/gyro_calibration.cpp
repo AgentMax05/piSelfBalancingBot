@@ -11,15 +11,13 @@ using namespace chrono;
 int main(int argc, char *argv[]) {
     mpu6050 gyroSensor(0x68, GYRO_RANGE_2000DEG);
     
-    vector<double> data = {0, 0, 0};
     int testCount = 0;
 
     int calibration_duration = argc > 1 ? stoi(argv[1]) : 30;
-    
     int calibration_start_delay = argc > 2 ? stoi(argv[2]) : 30;
 
     if (calibration_start_delay > 0) {
-        cout << "\nstarting test in " << calibration_start_delay << "seconds\n";
+        cout << "\nstarting test in " << calibration_start_delay << " seconds\n";
         if (calibration_start_delay > 5) {
             this_thread::sleep_for(seconds(calibration_start_delay - 5));
             cout << "starting program in 5 seconds\n";
@@ -29,8 +27,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    auto start = high_resolution_clock::now();
+    vector<double> data = {0, 0, 0};
     cout << "starting test\n";
+    auto start = high_resolution_clock::now();
     while (true) {
         vector<double> newData = gyroSensor.get_gyro_data();
         data[0] += newData[0];
