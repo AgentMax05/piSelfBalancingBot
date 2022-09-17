@@ -9,6 +9,7 @@ using namespace std;
 using namespace chrono;
 
 int main(int argc, char *argv[]) {
+    wiringPiSetupGPIO();
     mpu6050 gyroSensor(0x68, GYRO_RANGE_2000DEG);
     
     int testCount = 0;
