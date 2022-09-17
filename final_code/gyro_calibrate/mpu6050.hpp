@@ -29,7 +29,7 @@ const int ACCEL_RANGE_16G = 0x18;
 
 class mpu6050 {
     public:
-        mpu6050(int address, int gyro_range = GYRO_RANGE_250DEG, int accel_range = ACCEL_RANGE_2G, vector<double> gyro_offsets = {0, 0, 0});
+        mpu6050(int address, int gyro_range = GYRO_RANGE_250DEG, int accel_range = ACCEL_RANGE_2G, vector<double> new_gyro_offsets = {0, 0, 0});
         void set_gyro_range(int gyro_range);
         void set_accel_range(int accel_range);
 

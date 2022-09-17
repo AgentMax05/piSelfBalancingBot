@@ -6,14 +6,14 @@
 
 using namespace std;
 
-mpu6050::mpu6050(int address, int gyro_range, int accel_range, vector<double> gyro_offsets) : address{address} {
+mpu6050::mpu6050(int address, int gyro_range, int accel_range, vector<double> new_gyro_offsets) : address{address} {
     file = wiringPiI2CSetup(0x68);
     wiringPiI2CWriteReg8(file, PWR_MGMT_1, 0x00);
 
     set_gyro_range(gyro_range);
     set_accel_range(accel_range);
 
-    gyro_offsets = gyro_offsets;
+    gyro_offsets = new_gyro_offsets;
 }
 
 int mpu6050::read_register(int input_register) {
