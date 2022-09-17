@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
     auto start = high_resolution_clock::now();
     while (true) {
         vector<double> newData = gyroSensor.get_gyro_data();
+        cout << "newData size: " << newData.size() << '\n';
         cout << "newData: " << newData[0] << ' ' << newData[1] << ' ' << newData[2] << '\n';
         data[0] += newData[0];
         data[1] += newData[1];
