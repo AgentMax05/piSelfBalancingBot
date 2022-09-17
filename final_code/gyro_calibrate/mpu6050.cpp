@@ -48,9 +48,12 @@ int mpu6050::read_accel_range() {
 }
 
 vector<double> mpu6050::get_gyro_data() {
+    cout << "running get_gyro_data()\n";
     double x = read_register(GYRO_XOUT0);
     double y = read_register(GYRO_YOUT0);
     double z = read_register(GYRO_ZOUT0);
+
+    cout << x << ' ' << y << ' ' << z << '\n';
 
     int gyro_range = read_gyro_range();
     float gyro_scale_modifier = gyro_range_to_scale.at(gyro_range);
