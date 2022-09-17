@@ -9,7 +9,6 @@ using namespace std;
 using namespace chrono;
 
 int main(int argc, char *argv[]) {
-    wiringPiSetupGPIO();
     mpu6050 gyroSensor(0x68, GYRO_RANGE_2000DEG);
     
     int testCount = 0;
@@ -30,7 +29,9 @@ int main(int argc, char *argv[]) {
 
     vector<double> data = {0, 0, 0};
     cout << "starting test\n" << "data[0]: " << data[0] << '\n';
+    cout << "before clock\n";
     auto start = high_resolution_clock::now();
+    cout << "after clock\n";
     while (true) {
         cout << "before read\n";
         vector<double> newData = gyroSensor.get_gyro_data();
