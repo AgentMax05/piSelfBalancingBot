@@ -15,7 +15,7 @@ To build the robot you will need:
 - A DC motor controller board that can power 2 motors (or 2 of these boards)
 - Wires to connect the components
 - A battery to power the Raspberry Pi (to avoid having to connect it to an outlet)
-- (optional) A second batter pack to power the motors (if your motors require more than 5V)
+- (optional) A second battery pack to power the motors (if your motors require more than 5V)
 
 Then, after building your robot, clone this repository to the Raspberry Pi.
 
