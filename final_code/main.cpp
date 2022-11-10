@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <math.h>
 #include "mpu6050.hpp"
 #include "pid.hpp"
 
@@ -250,6 +251,9 @@ int main(int argc, char *argv[]) {
             previousTime = high_resolution_clock::now();
             double rawOutput = drivePID.compute(angle, duration.count() / 1000000.0);
             double pidCompute = mapPid(1024, pwmMin, pwmMax, rawOutput);
+
+            double pidComputeSquared = pow(pidCompute, 2);
+
             // cout << abs(int(pidCompute)) << " " << signum(pidCompute) << '\n';
             if (signum(pidCompute) > 0) {
                 // pwmWrite(BACKWARD_LEFT, 0);
@@ -259,8 +263,8 @@ int main(int argc, char *argv[]) {
                 pinMode(FORWARD_LEFT, PWM_OUTPUT);
                 pinMode(FORWARD_RIGHT, PWM_OUTPUT);
 
-                pwmWrite(FORWARD_LEFT, abs(int(pidCompute)));
-                pwmWrite(FORWARD_RIGHT, abs(int(pidCompute)));
+                pwmWrite(FORWARD_LEFT, abs(int(pidComputeSquared)));
+                pwmWrite(FORWARD_RIGHT, abs(int(pidComputeSquared)));
             } else if (signum(pidCompute) < 0) {
                 // pwmWrite(FORWARD_LEFT, 0);
                 // pwmWrite(FORWARD_RIGHT, 0);
@@ -269,8 +273,8 @@ int main(int argc, char *argv[]) {
                 pinMode(FORWARD_LEFT, INPUT);
                 pinMode(FORWARD_RIGHT, INPUT);
 
-                pwmWrite(BACKWARD_LEFT, abs(int(pidCompute)));
-                pwmWrite(BACKWARD_RIGHT, abs(int(pidCompute)));
+                pwmWrite(BACKWARD_LEFT, abs(int(pidComputeSquared)));
+                pwmWrite(BACKWARD_RIGHT, abs(int(pidComputeSquared)));
             } else {
                 // pwmWrite(FORWARD_LEFT, 0);
                 // pwmWrite(FORWARD_RIGHT, 0);
@@ -318,10 +322,6 @@ int main(int argc, char *argv[]) {
                 }
                 dataFile << '\n';
             }
-            // dataFile << headers[headers.size() - 1];
-            // for (int i = 0; i < dataVectors[0].size(); i++) {
-            //     dataFile << ',' << i;
-            // }
             dataFile << '\n';
             dataFile.close();
         }
