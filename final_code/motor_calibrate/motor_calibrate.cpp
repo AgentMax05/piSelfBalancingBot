@@ -27,6 +27,11 @@ void runTest(int pin, int &dutyCycle, bool &running) {
 int main(int argc, char *argv[]) {
     vector<int> usedPins = {18, 19};
     
+    int startDC = 500;
+    if (argc > 1) {
+        startDC = stoi(argv[1]);
+    }
+
     // if (argc == 1) {
     //     cout << "please enter L or R as command to select left or right motor\n";
     //     return 1;
@@ -65,7 +70,7 @@ int main(int argc, char *argv[]) {
     
     bool testRunning = true;
 
-    int leftDC = 650, rightDC = 650;
+    int leftDC = startDC, rightDC = startDC;
 
     thread leftTest(runTest, 18, ref(leftDC), ref(testRunning));
 
