@@ -252,7 +252,7 @@ int main(int argc, char *argv[]) {
             auto duration = duration_cast<microseconds>(high_resolution_clock::now() - previousTime);
             previousTime = high_resolution_clock::now();
             double rawOutput = drivePID.compute(angle, duration.count() / 1000000.0);
-            double pidCompute = mapPid(1024, pwmMin, pwmMax, rawOutput)
+            double pidCompute = mapPid(1024, pwmMin, pwmMax, rawOutput);
             pidCompute = signum(pidCompute) * pow(pidCompute, OUTPUT_EXPONENT);
 
             // double pidComputeSquared = pow(pidCompute, 2);
