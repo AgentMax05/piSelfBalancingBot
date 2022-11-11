@@ -5,6 +5,7 @@
 #include <vector>
 #include "mpu6050.hpp"
 #include "pid.hpp"
+#include "motor.hpp"
 
 #include <string.h> // for flag checking
 #include <fstream> // DEBUG (write) and reading offsets (read)
@@ -210,8 +211,11 @@ int main(int argc, char *argv[]) {
     // double pwmMin = 760;
     // double pwmMin = 630; // original pwmMin
     // double pwmMin = 700;
-    double pwmMin = 670;
-    double pwmMax = 1024;
+    // double pwmMin = 670;
+    // double pwmMax = 1024;
+
+    Motor leftMotor(FORWARD_LEFT, BACKWARD_LEFT, 670, 1024);
+    Motor rightMotor(FORWARD_RIGHT, BACKWARD_RIGHT, 670, 1024);
 
     // DEBUG
     bool DEBUG = hasFlag(argc, argv, "-d") || hasFlag(argc, argv, "--debug");
@@ -249,38 +253,10 @@ int main(int argc, char *argv[]) {
             auto duration = duration_cast<microseconds>(high_resolution_clock::now() - previousTime);
             previousTime = high_resolution_clock::now();
             double rawOutput = drivePID.compute(angle, duration.count() / 1000000.0);
-            double pidCompute = mapPid(1024, pwmMin, pwmMax, rawOutput);
-            // cout << abs(int(pidCompute)) << " " << signum(pidCompute) << '\n';
-            if (signum(pidCompute) > 0) {
-                // pwmWrite(BACKWARD_LEFT, 0);
-                // pwmWrite(BACKWARD_RIGHT, 0);
-                pinMode(BACKWARD_LEFT, INPUT);
-                pinMode(BACKWARD_RIGHT, INPUT);
-                pinMode(FORWARD_LEFT, PWM_OUTPUT);
-                pinMode(FORWARD_RIGHT, PWM_OUTPUT);
+            double pidCompute = mapPid(1024, 670, 1024, rawOutput);
 
-                pwmWrite(FORWARD_LEFT, abs(int(pidCompute)));
-                pwmWrite(FORWARD_RIGHT, abs(int(pidCompute)));
-            } else if (signum(pidCompute) < 0) {
-                // pwmWrite(FORWARD_LEFT, 0);
-                // pwmWrite(FORWARD_RIGHT, 0);
-                pinMode(BACKWARD_LEFT, PWM_OUTPUT);
-                pinMode(BACKWARD_RIGHT, PWM_OUTPUT);
-                pinMode(FORWARD_LEFT, INPUT);
-                pinMode(FORWARD_RIGHT, INPUT);
-
-                pwmWrite(BACKWARD_LEFT, abs(int(pidCompute)));
-                pwmWrite(BACKWARD_RIGHT, abs(int(pidCompute)));
-            } else {
-                // pwmWrite(FORWARD_LEFT, 0);
-                // pwmWrite(FORWARD_RIGHT, 0);
-                // pwmWrite(BACKWARD_LEFT, 0);
-                // pwmWrite(BACKWARD_RIGHT, 0);
-                pinMode(BACKWARD_LEFT, INPUT);
-                pinMode(BACKWARD_RIGHT, INPUT);
-                pinMode(FORWARD_LEFT, INPUT);
-                pinMode(FORWARD_RIGHT, INPUT);
-            }
+            leftMotor.run(rawOutput);
+            rightMotor.run(rawOutput);
 
             if (DEBUG) {
                 vector<double> pidRawData = drivePID.getRaw();
