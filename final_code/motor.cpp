@@ -1,6 +1,13 @@
 #include "motor.hpp"
 
+#include <wiringPi.h>
+#include <math.h>
+
 using namespace std;
+
+int Motor::signum(int num) {
+    return (num > 0) - (num < 0);
+}
 
 Motor::Motor(int fPin, int bPin, double min, double max) {
     forwardPin = fPin;
