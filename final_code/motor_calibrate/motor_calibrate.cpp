@@ -59,6 +59,7 @@ int main(int argc, char *argv[]) {
     //     delay(500);
     // }
 
+    wiringPiSetupGpio();
     cleanup(usedPins);
     cout << "Left Motor (press ENTER to stop):\n";
     
