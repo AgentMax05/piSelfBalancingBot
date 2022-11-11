@@ -213,6 +213,8 @@ int main(int argc, char *argv[]) {
     // double pwmMin = 700;
     double pwmMin = 670;
     double pwmMax = 1024;
+    double const MAX_LEAN_ANGLE = 15; // maximum lean angle before full power
+    int const OUTPUT_EXPONENT = 2; // power that the pid output is raised to
 
     // DEBUG
     bool DEBUG = hasFlag(argc, argv, "-d") || hasFlag(argc, argv, "--debug");
@@ -250,9 +252,14 @@ int main(int argc, char *argv[]) {
             auto duration = duration_cast<microseconds>(high_resolution_clock::now() - previousTime);
             previousTime = high_resolution_clock::now();
             double rawOutput = drivePID.compute(angle, duration.count() / 1000000.0);
-            double pidCompute = mapPid(1024, pwmMin, pwmMax, rawOutput);
+            double pidCompute = mapPid(1024, pwmMin, pwmMax, rawOutput)
+            pidCompute = signum(pidCompute) * pow(pidCompute, OUTPUT_EXPONENT);
 
-            double pidComputeSquared = pow(pidCompute, 2);
+            // double pidComputeSquared = pow(pidCompute, 2);
+
+            if (abs(target - angle) > MAX_LEAN_ANGLE) {
+                pidCompute = signum(pidCompute) * pwmMax;
+            }
 
             // cout << abs(int(pidCompute)) << " " << signum(pidCompute) << '\n';
             if (signum(pidCompute) > 0) {
@@ -263,8 +270,8 @@ int main(int argc, char *argv[]) {
                 pinMode(FORWARD_LEFT, PWM_OUTPUT);
                 pinMode(FORWARD_RIGHT, PWM_OUTPUT);
 
-                pwmWrite(FORWARD_LEFT, abs(int(pidComputeSquared)));
-                pwmWrite(FORWARD_RIGHT, abs(int(pidComputeSquared)));
+                pwmWrite(FORWARD_LEFT, abs(int(pidCompute)));
+                pwmWrite(FORWARD_RIGHT, abs(int(pidCompute)));
             } else if (signum(pidCompute) < 0) {
                 // pwmWrite(FORWARD_LEFT, 0);
                 // pwmWrite(FORWARD_RIGHT, 0);
@@ -273,8 +280,8 @@ int main(int argc, char *argv[]) {
                 pinMode(FORWARD_LEFT, INPUT);
                 pinMode(FORWARD_RIGHT, INPUT);
 
-                pwmWrite(BACKWARD_LEFT, abs(int(pidComputeSquared)));
-                pwmWrite(BACKWARD_RIGHT, abs(int(pidComputeSquared)));
+                pwmWrite(BACKWARD_LEFT, abs(int(pidCompute)));
+                pwmWrite(BACKWARD_RIGHT, abs(int(pidCompute)));
             } else {
                 // pwmWrite(FORWARD_LEFT, 0);
                 // pwmWrite(FORWARD_RIGHT, 0);
