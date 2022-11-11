@@ -30,7 +30,7 @@ void Motor::run(double rawOutput) {
         pinMode(backPin, INPUT);
         pinMode(forwardPin, PWM_OUTPUT);
 
-        pwmWrite(forwardPin, abs(int(pidCompute)))
+        pwmWrite(forwardPin, abs(int(pidCompute)));
     } else if (signum(pidCompute) < 0) {
         pinMode(backPin, PWM_OUTPUT);
         pinMode(forwardPin, INPUT);
