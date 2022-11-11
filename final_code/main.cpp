@@ -90,13 +90,14 @@ int main(int argc, char *argv[]) {
 
     // print out help if --help is entered
     if (hasFlag(argc, argv, "--help") || hasFlag(argc, argv, "-h")) {
-        cout << "\nusage: sudo ./main <p> <i> <d> [-h | --help] [--target <target-angle>] [--delay <pid-delay-ms>] [--integralTime <integral-time>] [--startDelay <start-delay-s>] [-d | --debug <debug-duration-sec>]\n";
+        cout << "\nusage: sudo ./main <p> <i> <d> [-h | --help] [--target <target-angle>] [--delay <pid-delay-ms>] [--integralTime <integral-time>] [--startDelay <start-delay-s>] [-d | --debug <debug-duration-sec>] [--motorCalibrate <min-pwm-l,min-pwm-r>]\n";
         cout << "\n<p>: the pid proportional gain\n<i>: the pid integral gain\n<d>: the pid derivative gain\n";
         cout << "\n--target <target-angle>: set the target angle of the pid control (default 0)\n";
         cout << "--delay <pid-delay-ms>: set the delay between each pid iteration in ms (default 1)\n";
         cout << "--integralTime <integral-time>: set the delta time for the integral in seconds (0 is continuous, default 350)\n";
         cout << "--startDelay <start-delay-s>: set a delay in the beginning of the program in seconds (default 0)\n";
-        cout << "-d | --debug <debug-duration-sec>: track all variables and write to robotData.txt for <debug-duration-sec> seconds (default 10)\n\n";
+        cout << "-d | --debug <debug-duration-sec>: track all variables and write to robotData.txt for <debug-duration-sec> seconds (default 10)\n";
+        cout << "--motorCalibrate <min-pwm-l,min-pwm-r>: set minimum pwm values for left and right motor, comma separated (default 670)\n\n";
         return 0;
     }
 
@@ -214,8 +215,15 @@ int main(int argc, char *argv[]) {
     // double pwmMin = 670;
     // double pwmMax = 1024;
 
-    Motor leftMotor(FORWARD_LEFT, BACKWARD_LEFT, 670, 1024);
-    Motor rightMotor(FORWARD_RIGHT, BACKWARD_RIGHT, 670, 1024);
+    double pwmMinL = 670, pwmMinR = 670;
+    if (hasFlag(argc, argv, "--motorCalibrate")) {
+        vector<string> mins = splitString(getFlagArg(argc, argv, "--motorCalibrate"), ',');
+        pwmMinL = stoi(mins[0]);
+        pwmMinR = stoi(mins[1]);
+    }
+
+    Motor leftMotor(FORWARD_LEFT, BACKWARD_LEFT, pwmMinL, 1024);
+    Motor rightMotor(FORWARD_RIGHT, BACKWARD_RIGHT, pwmMinR, 1024);
 
     // DEBUG
     bool DEBUG = hasFlag(argc, argv, "-d") || hasFlag(argc, argv, "--debug");

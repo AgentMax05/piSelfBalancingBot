@@ -3,7 +3,6 @@
 graphs
 cpp_test
 /final_code/gyro_plot
-/final_code/motor_calibrate
 
 *.exe
 *.out
