@@ -221,6 +221,7 @@ int main(int argc, char *argv[]) {
         pwmMinL = stoi(mins[0]);
         pwmMinR = stoi(mins[1]);
     }
+    cout << "motor mins: L " << stoi(mins[0]) << ", R " << stoi(mins[1]) << '\n';
 
     Motor leftMotor(FORWARD_LEFT, BACKWARD_LEFT, pwmMinL, 1024);
     Motor rightMotor(FORWARD_RIGHT, BACKWARD_RIGHT, pwmMinR, 1024);
