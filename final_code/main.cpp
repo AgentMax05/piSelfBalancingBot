@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <string>
 #include "mpu6050.hpp"
 #include "pid.hpp"
 #include "motor.hpp"
@@ -115,25 +116,6 @@ int main(int argc, char *argv[]) {
     int FORWARD_RIGHT = 19;
     int BACKWARD_RIGHT = 13;
     
-    // pinMode(FORWARD_LEFT, PWM_OUTPUT);
-    // pinMode(BACKWARD_LEFT, PWM_OUTPUT);
-    // pinMode(FORWARD_RIGHT, PWM_OUTPUT);
-    // pinMode(BACKWARD_RIGHT, PWM_OUTPUT);
-
-    // pwmWrite(18, 1024);
-    // pwmWrite(FORWARD_RIGHT, 1024);
-    // delay(5000);
-    // this_thread::sleep_for(seconds(5));
-    // int start_i = argc > 1 ? stoi(argv[1]) : 1024;
-
-    // for (int i = start_i; i >= 0; i--) {
-    //     pwmWrite(18, i);
-    //     pwmWrite(19, i);
-    //     cout << i << '\n';
-    //     delay(500);
-    // }
-    // mpu6050 gyroSensor(0x68, GYRO_RANGE_2000DEG, ACCEL_RANGE_2G, {-16.5033, 0.679927, -2.37347});
-
     // read offsets from offsets.txt (set by gyro_calibrate)
     string line, data = "";
     ifstream offsetsFile("./offsets.txt");
@@ -173,9 +155,6 @@ int main(int argc, char *argv[]) {
     double kp, ki, kd;
 
     if (argc >= 4) {
-        // kp = stoi(argv[1]);
-        // ki = stoi(argv[2]);
-        // kd = stoi(argv[3]);
         kp = stod(argv[1]);
         ki = stod(argv[2]);
         kd = stod(argv[3]);
@@ -196,8 +175,6 @@ int main(int argc, char *argv[]) {
     }
 
     PID drivePID(kp, ki, kd, 1024, -1024, integralTime);
-    // drivePID.setTarget(0);
-    // drivePID.setTarget(10);
     double target;
     if (hasFlag(argc, argv, "--target")) {
         target = stod(getFlagArg(argc, argv, "--target"));
@@ -209,15 +186,10 @@ int main(int argc, char *argv[]) {
 
     thread gyroThread(angleTracker, ref(gyroSensor), ref(angle), 1);
 
-    // double pwmMin = 760;
-    // double pwmMin = 630; // original pwmMin
-    // double pwmMin = 700;
-    // double pwmMin = 670;
-    // double pwmMax = 1024;
-
     double pwmMinL = 670, pwmMinR = 670;
+    vector<string> mins = {to_string(pwmMinL), to_string(pwmMinR)};
     if (hasFlag(argc, argv, "--motorCalibrate")) {
-        vector<string> mins = splitString(getFlagArg(argc, argv, "--motorCalibrate"), ',');
+        mins = splitString(getFlagArg(argc, argv, "--motorCalibrate"), ',');
         pwmMinL = stoi(mins[0]);
         pwmMinR = stoi(mins[1]);
     }
