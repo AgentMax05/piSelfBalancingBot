@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string.h>
+#include <fstream>
 
 #include <thread>
 
@@ -32,38 +33,6 @@ int main(int argc, char *argv[]) {
         startDC = stoi(argv[1]);
     }
 
-    // if (argc == 1) {
-    //     cout << "please enter L or R as command to select left or right motor\n";
-    //     return 1;
-    // }
-
-    // int currentDutyCycle = 650;
-    // int motorPin;
-
-    // if (strcmp(argv[1], "L") == 0) {
-    //     cout << "starting left motor test\n";
-    //     motorPin = 18;
-    // } else {
-    //     cout << "starting right motor test\n";
-    //     motorPin = 19;
-    // }
-
-    // wiringPiSetupGpio();
-    // cleanup(usedPins);
-    // // pinMode(motorPin, PWM_OUTPUT);
-    // pinMode(18, PWM_OUTPUT);
-    // pinMode(19, PWM_OUTPUT);
-    // pwmWrite(18, currentDutyCycle);
-    // pwmWrite(19, currentDutyCycle);
-    // while (true) {
-    //     currentDutyCycle++;
-    //     // pwmWrite(motorPin, currentDutyCycle);
-    //     pwmWrite(18, currentDutyCycle);
-    //     pwmWrite(19, currentDutyCycle);
-    //     cout << currentDutyCycle << '\n';
-    //     delay(500);
-    // }
-
     wiringPiSetupGpio();
     cleanup(usedPins);
     cout << "Left Motor (press ENTER to stop):\n";
@@ -88,5 +57,13 @@ int main(int argc, char *argv[]) {
 
     cleanup(usedPins);
 
-    cout << "\nLeft min: " << leftDC << "\nRight min: " << rightDC;
+    cout << "\nLeft min: " << leftDC << "\nRight min: " << rightDC << '\n';
+
+    cout << "writing results to ../motors.txt\n";
+
+    ofstream outputFile("../motors.txt");
+    outputFile << leftDC << ',' << rightDC;
+    outputFile.close();
+
+    cout << "file written\n";
 }

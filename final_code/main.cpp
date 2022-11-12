@@ -82,6 +82,19 @@ vector<string> splitString(string input, char delimiter) {
     return output;
 }
 
+string readFile(string filename) {
+    string line, data = "";
+    ifstream file(filename);
+    if (file.is_open()) {
+        while (file) {
+            getline(file, line);
+            data += line;
+        }
+        file.close();
+    }
+    return data;
+}
+
 void ctrlc_callback(int sig) {
     cleanup(usedPins);
     exit(sig);
@@ -117,20 +130,12 @@ int main(int argc, char *argv[]) {
     int BACKWARD_RIGHT = 13;
     
     // read offsets from offsets.txt (set by gyro_calibrate)
-    string line, data = "";
-    ifstream offsetsFile("./offsets.txt");
-    if (offsetsFile.is_open()) {
-        while (offsetsFile) {
-            getline(offsetsFile, line);
-            data += line;
-        }
-        offsetsFile.close();
-    }
+    string offsetsData = readFile("./offsets.txt");
 
-    vector<string> dataVector = splitString(data, ',');
+    vector<string> offsetsDataVector = splitString(offsetsData, ',');
     vector<double> rawOffsets = {};
-    for (int i = 0; i < dataVector.size(); i++) {
-        rawOffsets.push_back(stod(dataVector[i]));
+    for (int i = 0; i < offsetsDataVector.size(); i++) {
+        rawOffsets.push_back(stod(offsetsDataVector[i]));
     }
     vector<double> offsets = rawOffsets.size() == 3 ? rawOffsets : vector<double>({-16.4125, 0.624438, -2.38807});
 
@@ -192,6 +197,14 @@ int main(int argc, char *argv[]) {
         mins = splitString(getFlagArg(argc, argv, "--motorCalibrate"), ',');
         pwmMinL = stoi(mins[0]);
         pwmMinR = stoi(mins[1]);
+    } else {
+        // attempt to read file set by motor_calibrate
+        string motorData = readFile("./motors.txt");
+        vector<string> motorDataVector = splitString(motorData, ',');
+        if (motorDataVector.size() == 2) {
+            pwmMinL = stod(motorDataVector[0]);
+            pwmMinR = stod(motorDataVector[1]);
+        }
     }
     cout << "motor mins: L " << stoi(mins[0]) << ", R " << stoi(mins[1]) << '\n';
 
